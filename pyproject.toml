@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spray_wrapper"
+version = "1.0.0"
+description = "Spray Wrapper tool by 3ndG4me"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "colorama==0.4.6",
+]
+
+[project.scripts]
+spray-wrapper = "spray_wrapper.cli:main"
