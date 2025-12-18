@@ -1,1 +1,1 @@
-__all__ = ["trevorspray", "crackmapexec"]
+__all__ = ["trevorspray", "nxc"]
