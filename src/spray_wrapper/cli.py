@@ -1,7 +1,9 @@
 import time
 import argparse
+import sys
 from colorama import init, Fore, Back, Style
 from .modules import *
+from . import modules
 
 def spray(url, password_file, emails_file, tool, attempts, delay, proxy):
     with open(password_file, 'r') as file:
@@ -17,8 +19,8 @@ def spray(url, password_file, emails_file, tool, attempts, delay, proxy):
                 break
             if tool == "trevorspray" :
                 trevorspray.trevorspray(emails_file, password, proxy, url)
-            elif tool == "crackmapexec":
-                crackmapexec.cme(emails_file, password, url)
+            elif tool == "nxc":
+                nxc.cme(emails_file, password, url)
             else:
                 print("Tool not found...")
                 exit()
@@ -67,14 +69,26 @@ def main():
     print(Fore.RED + banner + Style.RESET_ALL)
 
     parser = argparse.ArgumentParser(description="Spray Wrapper v1.0")
+    parser.add_argument("-L", "--list-modules", action="store_true", help="List supported modules.")
     parser.add_argument("-u", "--url", help="Target URL/IP/IP CIDR range to spray if tool requires it (optional).")
-    parser.add_argument("-p", "--passwords", required=True, help="Password file to spray.")
-    parser.add_argument("-e", "--emails", required=True, help="Emails/Usernames file to spray.")
-    parser.add_argument("-t", "--tool", required=True, help="Tool to use (trevorspray/crackmapexec).")
+    parser.add_argument("-p", "--passwords", help="Password file to spray.")
+    parser.add_argument("-e", "--emails", help="Emails/Usernames file to spray.")
+    parser.add_argument("-t", "--tool", help="Tool to use (trevorspray/nxc).")
     parser.add_argument("-a", "--attempts", type=int, default=2, help="The number of passwords to to try and at a time (default is 2).")
     parser.add_argument("-d", "--delay", type=int, default=300, help="The delay in seconds between each number of attempts (default is 300).")
     parser.add_argument("-x", "--proxy", help="HTTP(S) Proxy to feed to command if supported (optional)")
     args = parser.parse_args()
+
+    if args.list_modules:
+        print(f"{Fore.GREEN}Supported modules:{Style.RESET_ALL}")
+        for module in modules.__all__:
+            print(f" - {module}")
+        sys.exit(0)
+
+    if not args.passwords or not args.emails or not args.tool:
+        parser.print_usage()
+        print(f"{Fore.RED}error: the following arguments are required: -p/--passwords, -e/--emails, -t/--tool{Style.RESET_ALL}")
+        sys.exit(1)
     
     spray(args.url, args.passwords, args.emails, args.tool, args.attempts, args.delay, args.proxy)
 
